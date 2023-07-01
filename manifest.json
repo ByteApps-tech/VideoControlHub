@@ -1,0 +1,42 @@
+{
+  "manifest_version": 3,
+  "homepage_url": "https://github.com/jiatln",
+  "name": "VideoControlHub",
+  "description": "Video Control Hub",
+  "version": "0.0.1",
+  "icons": {
+    "16": "icon/logo.png",
+    "32": "icon/logo.png",
+    "48": "icon/logo.png",
+    "64": "icon/logo.png",
+    "128": "icon/logo.png"
+  },
+  "action": {
+    "default_title": "VideoControlHub",
+    "default_icon": {
+      "16": "icon/logo.png",
+      "32": "icon/logo.png",
+      "48": "icon/logo.png",
+      "64": "icon/logo.png",
+      "128": "icon/logo.png"
+    }
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; frame-ancestors 'none';"
+  },
+  "externally_connectable": {
+    "ids": [
+      "*"
+    ]
+  },
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "tabs"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  }
+}

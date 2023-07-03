@@ -1,0 +1,22 @@
+{
+  "name": "videohub",
+  "version": "1.0.0",
+  "description": "WIP",
+  "main": "background.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ByteApps-tech/VideoControlHub.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ByteApps-tech/VideoControlHub/issues"
+  },
+  "homepage": "https://github.com/ByteApps-tech/VideoControlHub#readme",
+  "dependencies": {
+    "@types/chrome": "^0.0.239"
+  }
+}

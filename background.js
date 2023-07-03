@@ -1,32 +1,17 @@
-chrome.runtime.onInstalled.addListener(() => {
-  chrome.action.setBadgeText({ text: 'OFF' })
-})
+chrome.tabs.onUpdated.addListener((tabId, _, tab) => {
+  if (tab.status === 'complete') {
+    console.log('tab', tab)
 
-chrome.action.onClicked.addListener(async (tab) => {
-  const prevState = await chrome.action.getBadgeText({
-    tabId: tab.id,
-  })
-  const nextState = prevState === 'ON' ? 'OFF' : 'ON'
-  chrome.action.setBadgeText({
-    text: nextState,
-  })
+    chrome.action.setBadgeText({
+      text: 'Ready',
+    })
 
-  await chrome.scripting.executeScript({
-    target: {
-      tabId: tab.id,
-    },
-    files: ['./content.js'],
-  })
-})
-
-function foo(nextState) {
-  const video = document.querySelector('video')
-  if (video) {
-    if (nextState === 'ON') {
-      video.play()
-    }
-    else {
-      video.pause()
-    }
+    chrome.tabs.sendMessage(tabId, {
+      type: 'NEW',
+      url: tab.url,
+      title: tab.title
+    })
   }
-}
+});
+
+

@@ -1,42 +1,59 @@
 {
-  "manifest_version": 3,
-  "homepage_url": "https://github.com/jiatln",
   "name": "VideoControlHub",
-  "description": "Video Control Hub",
   "version": "0.0.1",
-  "icons": {
-    "16": "icon/logo.png",
-    "32": "icon/logo.png",
-    "48": "icon/logo.png",
-    "64": "icon/logo.png",
-    "128": "icon/logo.png"
-  },
-  "action": {
-    "default_title": "VideoControlHub",
-    "default_icon": {
-      "16": "icon/logo.png",
-      "32": "icon/logo.png",
-      "48": "icon/logo.png",
-      "64": "icon/logo.png",
-      "128": "icon/logo.png"
-    }
-  },
-  "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'; frame-ancestors 'none';"
-  },
-  "externally_connectable": {
-    "ids": [
-      "*"
-    ]
-  },
+  "description": "Your Video Control All in One",
   "permissions": [
     "storage",
+    "tabs",
     "activeTab",
+    "declarativeContent",
     "scripting",
-    "tabs"
+    "contextMenus",
+    "webRequest",
+    "webRequestBlocking",
+    "unlimitedStorage",
+    "clipboardWrite"
+  ],
+  "host_permissions": [
+    "https://*.youtube.com/*",
+    "https://*.bilibili.com/*"
   ],
   "background": {
-    "service_worker": "background.js",
-    "type": "module"
-  }
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.youtube.com/*",
+        "https://*.bilibili.com/*"
+      ],
+      "js": [
+        "contentScript.js"
+      ]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "assets/bookmark.png",
+        "assets/play.png",
+        "assets/delete.png",
+        "assets/save.png"
+      ],
+      "matches": [
+        "https://*.youtube.com/*",
+        "https://*.bilibili.com/*"
+      ]
+    }
+  ],
+  "action": {
+    "default_icon": {
+      "16": "assets/ext-icon.png",
+      "24": "assets/ext-icon.png",
+      "32": "assets/ext-icon.png"
+    },
+    "default_title": "VideoControlHub",
+    "default_popup": "popup.html"
+  },
+  "manifest_version": 3
 }

@@ -1,0 +1,54 @@
+.container {
+  width: 280px;
+  color: #314d3e;
+}
+
+.title {
+  padding: 8px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.textbox {
+  width: 100%;
+  padding: 0 2px;
+  margin: 0;
+  font-size: 12px;
+}
+
+.textbox:focus {
+  border-color: #66afe9;
+  outline: 0;
+}
+
+.bookmarks {
+  padding: 3px;
+  margin: 5px 5px;
+}
+
+.bookmark {
+  display: flex;
+  padding: 3px;
+  padding-bottom: 7px;
+  margin-bottom: 7px;
+  border-bottom-color: #00254d;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-radius: .8rem;
+}
+
+.bookmark-title {
+  padding-left: 2px;
+}
+
+.bookmark-controls img {
+  width: 18px;
+  height: 18px;
+  margin: 0 4px;
+  cursor: pointer;
+}
+
+.bookmark-controls {
+  flex: auto;
+  text-align: right;
+}

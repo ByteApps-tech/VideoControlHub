@@ -1,38 +1,34 @@
 (() => {
   console.log('hello')
 
-  let hasListen = false
-
+  let hadListened = false
 
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     console.log('message', message)
     console.log('sender', sender)
     console.log('sendResponse', sendResponse)
 
-    if (hasListen) return
+    if (hadListened) return
 
-    const flag = foo()
-    console.log('flag', flag)
+    const flag = handleListen()
     if (flag) {
-      hasListen = true
-      // 不生效
-      chrome.action.setBadgeText({
-        text: 'ON',
-      })
+      hadListened = true
     }
   })
 
 
 })()
 
-function foo() {
+let isDebug = true
+
+function handleListen() {
   const videos = document.querySelectorAll('video');
-  console.log('videos', videos)
+
   if (!videos.length) return false;
+
   const video = videos[0];
 
   video.play();
-
 
   document.addEventListener('keydown', (e) => {
     console.log('e', e.key)
@@ -60,15 +56,34 @@ function foo() {
         video.playbackRate = 1;
         showMessage('倍速重置为 1x');
         break;
+      case 'v':
+        video.volume = Math.max(video.volume - 0.1, 0);
+        showMessage(`当前音量：${(video.volume * 100).toFixed(0)}%`);
+        break;
+      case 'b':
+        video.volume = Math.min(video.volume + 0.1, 1);
+        showMessage(`当前音量：${(video.volume * 100).toFixed(0)}%`);
+        break;
       case 'i':
         // 弹出当前视频 倍数 进度
         showMessage(`倍速：${video.playbackRate}x，进度：${convertSecondsToMinutes(video.currentTime.toFixed(0))}`);
         break;
+      case 'p':
+        // 切换播放和暂停
+        if (video.paused) {
+          video.play();
+          showMessage('播放');
+        } else {
+          video.pause();
+          showMessage('暂停');
+        }
+        break;
       default:
-        showMessage('按键：' + e.key);
+        if (isDebug) {
+          showMessage('按键：' + e.key);
+        }
         break;
     }
-
   })
 
   return true
@@ -85,7 +100,7 @@ function showMessage(message) {
   messageElement.style.top = '50%';
   messageElement.style.left = '50%';
   messageElement.style.transform = 'translate(-50%, -50%)';
-  messageElement.style.backgroundColor = '#000000';
+  messageElement.style.backgroundColor = '#a7aa';
   messageElement.style.color = '#fff';
   messageElement.style.fontSize = '16px';
   messageElement.style.borderRadius = '4px';
@@ -93,7 +108,7 @@ function showMessage(message) {
   messageElement.style.padding = '10px';
   messageElement.style.boxSizing = 'border-box';
   messageElement.style.opacity = '0';
-  messageElement.style.zIndex = '999999';
+  messageElement.style.zIndex = '9999';
   messageElement.style.transition = 'opacity 0.5s';
 
   // 添加元素到页面
@@ -105,6 +120,10 @@ function showMessage(message) {
   // 在 3 秒后隐藏消息
   setTimeout(() => {
     messageElement.style.opacity = '0';
+    // 延迟 0.5 秒后销毁 div 元素
+    setTimeout(() => {
+      messageElement.remove();
+    }, 500);
   }, 1000);
 }
 

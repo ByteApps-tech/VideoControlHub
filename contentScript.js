@@ -22,13 +22,13 @@
 let isDebug = true
 
 function handleListen() {
+  let video = null
   const videos = document.querySelectorAll('video');
+  const bilibiliMovieVideo = document.querySelector('.bpx-player-video-wrap')?.childNodes?.[0]
 
-  if (!videos.length) return false;
+  if (!videos.length && !bilibiliMovieVideo) return false;
 
-  const video = videos[0];
-
-  video.play();
+  video = bilibiliMovieVideo || videos[0];
 
   document.addEventListener('keydown', (e) => {
     console.log('e', e.key)
@@ -65,8 +65,7 @@ function handleListen() {
         showMessage(`当前音量：${(video.volume * 100).toFixed(0)}%`);
         break;
       case 'i':
-        // 弹出当前视频 倍数 进度
-        showMessage(`倍速：${video.playbackRate}x，进度：${convertSecondsToMinutes(video.currentTime.toFixed(0))}`);
+        showVideoInfo(video);
         break;
       case 'p':
         // 切换播放和暂停
@@ -76,6 +75,15 @@ function handleListen() {
         } else {
           video.pause();
           showMessage('暂停');
+        }
+        break;
+      case 'm':
+        // 切换静音
+        video.muted = !video.muted;
+        if (video.muted) {
+          showMessage('静音');
+        } else {
+          showMessage('取消静音');
         }
         break;
       default:
@@ -128,12 +136,37 @@ function showMessage(message) {
 }
 
 
-function convertSecondsToMinutes(seconds) {
-  var minutes = Math.floor(seconds / 60);  // 得到分钟数
-  var remainingSeconds = seconds % 60;     // 得到剩余的秒数
+function formatTime(seconds) {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const secs = Math.floor(seconds % 60);
 
-  // 将分钟数和剩余秒数作为字符串拼接起来
-  var formattedTime = minutes + " 分钟 " + remainingSeconds + " 秒";
+  const formattedHours = String(hours).padStart(2, '0');
+  const formattedMinutes = String(minutes).padStart(2, '0');
+  const formattedSeconds = String(secs).padStart(2, '0');
 
-  return formattedTime;
+  return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+}
+
+
+function showVideoInfo(video) {
+  let current = formatTime(video.currentTime.toFixed(0))
+  let duration = formatTime(video.duration.toFixed(0))
+  if (Number.isNaN(video.duration)) {
+    duration = ''
+  } else {
+    duration = '/' + formatTime(video.duration.toFixed(0))
+  }
+  if (current.startsWith('00:') && duration.startsWith('00:')) {
+    // 去掉前面的 00:
+    current = current.slice(3)
+    duration = duration.slice(3)
+  }
+  const volume = (video.volume * 100).toFixed(0)
+  // 弹出当前视频 倍数 进度
+  showMessage(`
+    音量：${volume}%，
+    倍速：${video.playbackRate}x，
+    进度：${current}${duration}
+  `)
 }

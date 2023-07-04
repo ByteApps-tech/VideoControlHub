@@ -20,6 +20,7 @@
 })()
 
 let isDebug = true
+let videoIsCenter = false
 
 function handleListen() {
   let video = null
@@ -29,6 +30,8 @@ function handleListen() {
   if (!videos.length && !bilibiliMovieVideo) return false;
 
   video = bilibiliMovieVideo || videos[0];
+
+  injectStyle()
 
   document.addEventListener('keydown', (e) => {
     console.log('e', e.key)
@@ -85,6 +88,24 @@ function handleListen() {
         } else {
           showMessage('取消静音');
         }
+        break;
+      case 'c':
+        videoIsCenter = !videoIsCenter
+        video.style.width = '100%'
+        // video 置于中间
+        centerVideo(video);
+        if (videoIsCenter) {
+          changeVideoSize(video, -30)
+        }
+        break;
+      case '-':
+        if (!videoIsCenter) return
+        changeVideoSize(video, -10)
+        break;
+      case '=':
+        if (!videoIsCenter) return
+        // video 放大
+        changeVideoSize(video, 10)
         break;
       default:
         if (isDebug) {
@@ -169,4 +190,122 @@ function showVideoInfo(video) {
     倍速：${video.playbackRate}x，
     进度：${current}${duration}
   `)
+}
+
+function injectStyle() {
+  // 检查文档中是否存在具有特定id的<style>元素
+  function isStyleExist(styleId) {
+    return document.getElementById(styleId) !== null;
+  }
+
+  // 如果不存在，则创建<style>元素并插入样式
+  function createStyleIfNotExist(styleId, cssContent) {
+    if (!isStyleExist(styleId)) {
+      var styleElement = document.createElement("style");
+      styleElement.id = styleId;
+      styleElement.innerHTML = cssContent;
+      document.head.appendChild(styleElement);
+    }
+  }
+
+  // 要插入的样式内容
+  var cssContent = `
+  #video-hub-background-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9998;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  .overflow-hidden {
+    overflow: hidden !important;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+  
+  #video-hub {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    width: 100%;
+    height: 100%;
+    padding: 1000px;
+    background-color: rgba(0, 0, 0, 0.9);
+  }
+  
+  video {
+    transition: all 0.5s;
+  }
+  
+  `;
+
+  // 要插入的样式元素id
+  var styleId = "video-hub";
+
+  createStyleIfNotExist(styleId, cssContent);
+}
+
+
+function centerVideo(videoEl) {
+  // 检查元素是否存在 id 属性，并且值为 "video-hub"
+  if (videoEl.getAttribute("id") === "video-hub") {
+    // 元素已经具有 id 属性，移除该属性
+    videoEl.removeAttribute("id");
+  } else {
+    videoEl.setAttribute("id", "video-hub");
+  }
+
+  // #biliMainHeader 隐藏或显示
+  const biliMainHeader = document.getElementById("biliMainHeader");
+  if (biliMainHeader.classList.contains("hidden")) {
+    biliMainHeader.classList.remove("hidden");
+  } else {
+    biliMainHeader.classList.add("hidden");
+  }
+
+  // body overflow hidden
+  const body = document.body;
+  if (body.classList.contains("overflow-hidden")) {
+    body.classList.remove("overflow-hidden");
+  } else {
+    body.classList.add("overflow-hidden");
+  }
+}
+
+function addBackgroundOverlay() {
+  // 检查文档中是否存在具有特定id的<div>元素
+  function isDivExist(divId) {
+    return document.getElementById(divId) !== null;
+  }
+
+  // 如果不存在，则创建<div>元素并插入样式
+  function createDivIfNotExist(divId) {
+    if (!isDivExist(divId)) {
+      var divElement = document.createElement("div");
+      divElement.id = divId;
+      document.body.appendChild(divElement);
+    } else {
+      // 如果存在，则移除该元素
+      document.getElementById(divId).remove();
+    }
+  }
+
+  // 要插入的样式元素id
+  var divId = "video-hub-background-overlay";
+
+  createDivIfNotExist(divId);
+}
+
+
+function changeVideoSize(videoEl, delta = 10) {
+  const width = videoEl.style.width.replace("%", "");
+  const newWidth = Math.min(Math.max(+width + delta, 10), 100);
+  videoEl.style.width = `${newWidth}%`;
 }

@@ -11,19 +11,91 @@
 </head>
 
 <body>
-
   <div class="container">
-    <div>
-      <div class="title">
-        Your video controls all in one place
+    <div class="title">
+      Video Control Hub Setting
+    </div>
+    <div class="content-wrapper">
+      <!-- speed -->
+      <div class="content__title">
+        Speed
       </div>
-      <ul>
-        <li>按下 "右箭头" 键：将视频快进 5 秒。</li>
-        <li>按下 "左箭头" 键：将视频快退 5 秒。</li>
-        <li>按下 "z" 键：降低视频的播放速度 0.1 倍（但不低于 0.1 倍）。</li>
-        <li>按下 "x" 键：增加视频的播放速度 0.1 倍。</li>
-        <li>按下 "r" 键：将视频的播放速度重置为正常速度（1 倍）。</li>
-      </ul>
+      <div class="content__ctx">
+        <div class="content__ctx-item">
+          <label for="speedSubtractKey">Down</label>
+          <input type="text" id="speedSubtractKey" name="speedSubtractKey" value="">
+        </div>
+        <div class="content__ctx-item">
+          <label for="speedResetKey">Reset</label>
+          <input type="text" id="speedResetKey" name="speedResetKey" value="">
+        </div>
+        <div class="content__ctx-item">
+          <label for="speedAddKey">Up</label>
+          <input type="text" id="speedAddKey" name="speedAddKey" value="">
+        </div>
+        <div class="content__ctx-item">
+          <label for="speedStep">Intervel</label>
+          <input type="text" id="speedStep" name="speedStep" value="">
+        </div>
+      </div>
+      <!-- Volume -->
+      <div class="content__title">
+        Volume
+      </div>
+      <div class="content__ctx">
+        <div class="content__ctx-item">
+          <label for="volumeSubtractKey">Down</label>
+          <input type="text" id="volumeSubtractKey" name="volumeSubtractKey" value="">
+        </div>
+        <div class="content__ctx-item">
+          <label for="volumeResetKey">Reset</label>
+          <input type="text" id="volumeResetKey" name="volumeResetKey" value="">
+        </div>
+        <div class="content__ctx-item">
+          <label for="volumeAddKey">Up</label>
+          <input type="text" id="volumeAddKey" name="volumeAddKey" value="">
+        </div>
+        <div class="content__ctx-item">
+          <label for="volumeStep">Intervel</label>
+          <input type="text" id="volumeStep" name="volumeStep" value="">
+        </div>
+        <div class="content__ctx-item">
+          <label for="volumeDefault">Default</label>
+          <input type="text" id="volumeDefault" name="volumeDefault" value="">
+        </div>
+      </div>
+      <!-- Move Timeline -->
+      <div class="content__title">
+        Move Timeline
+      </div>
+      <div class="content__ctx">
+        <div class="content__ctx-item">
+          <label for="forwardKey">Forward</label>
+          <input type="text" id="forwardKey" name="forwardKey" value="">
+        </div>
+        <div class="content__ctx-item">
+          <label for="backwardKey">Backward</label>
+          <input type="text" id="backwardKey" name="backwardKey" value="">
+        </div>
+        <div class="content__ctx-item">
+          <label for="forwardStep">Intervel</label>
+          <input type="text" id="forwardStep" name="forwardStep" value="">
+        </div>
+      </div>
+      <!-- Light off & Theater Mode & FullScreen -->
+      <div class="content__title">
+        Light off & Theater Mode & FullScreen
+      </div>
+      <div class="content__ctx">
+        <div class="content__ctx-item">
+          <label for="trunLightKey">Toggle</label>
+          <input type="text" id="trunLightKey" name="trunLightKey" value="">
+        </div>
+      </div>
+      <footer class="footer">
+        <p>version: 1.0.0</p>
+        <div>ByteApps.tech</div>
+      </footer>
     </div>
   </div>
 </body>

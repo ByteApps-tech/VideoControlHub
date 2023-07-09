@@ -1,7 +1,16 @@
-(() => {
-  console.log('hello')
+function getSetting(key) {
+  return new Promise((resolve) => {
+    chrome.storage.local.get([key], (result) => resolve(result[key]))
+  })
+}
+
+(async () => {
+  console.log('hello videohub')
 
   let hadListened = false
+
+  const settings = await getSetting('config')
+  console.log('settings', settings)
 
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     console.log('message', message)

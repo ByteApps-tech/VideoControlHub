@@ -176,6 +176,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 function checkValue(value, config) {
+  return true
+  // TODO: 有bug，暂时不用
   if (value.length !== 1) {
     alert('快捷键只能是一个字符')
     return false

@@ -9,13 +9,7 @@ function getSetting(key) {
 
   let hadListened = false
 
-  const settings = await getSetting('config')
-  console.log('settings', settings)
-
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    console.log('message', message)
-    console.log('sender', sender)
-    console.log('sendResponse', sendResponse)
 
     if (hadListened) return
 
@@ -31,6 +25,15 @@ function getSetting(key) {
 let isDebug = true
 let videoIsCenter = false
 
+// 获取设置
+function getConfig() {
+  return new Promise((resolve) => {
+    chrome.storage.sync.get('config', result => {
+      resolve(result.config)
+    })
+  })
+}
+
 function handleListen() {
   let video = null
   const videos = document.querySelectorAll('video');
@@ -42,80 +45,75 @@ function handleListen() {
 
   injectStyle()
 
-  document.addEventListener('keydown', (e) => {
-    console.log('e', e.key)
+  document.addEventListener('keydown', async (e) => {
+
+    const config = await getConfig()
 
     switch (e.key) {
-      case 'ArrowRight':
-        video.currentTime += 5;
-        showMessage('快进：5s');
+      case config.forwardKey:
+        handleSeek(video, +config.forwardStep)
         break;
-      case 'ArrowLeft':
-        video.currentTime -= 5;
-        showMessage('快退：5s');
+      case config.backwardKey:
+        handleSeek(video, -config.forwardStep)
         break;
-      case 'z':
-        const rate1 = Math.max(+(video.playbackRate - 0.1).toFixed(1), 0.1);
-        video.playbackRate = rate1;
-        showMessage(`调速：${rate1}x`);
+      case config.speedSubtractKey:
+        handleSpeedChange(video, -config.speedStep)
         break;
-      case 'x':
-        const rate2 = +(video.playbackRate + 0.1).toFixed(1);
-        video.playbackRate = rate2;
-        showMessage(`调速：${rate2}x`);
+      case config.speedAddKey:
+        handleSpeedChange(video, +config.speedStep)
         break;
-      case 'r':
-        video.playbackRate = 1;
-        showMessage('倍速重置为 1x');
+      case config.speedResetKey:
+        handleSpeedReset(video)
         break;
-      case 'v':
-        video.volume = Math.max(video.volume - 0.1, 0);
-        showMessage(`当前音量：${(video.volume * 100).toFixed(0)}%`);
+      case config.volumeSubtractKey:
+        handleVolumeChange(video, -config.volumeStep)
         break;
-      case 'b':
-        video.volume = Math.min(video.volume + 0.1, 1);
-        showMessage(`当前音量：${(video.volume * 100).toFixed(0)}%`);
+      case config.volumeAddKey:
+        handleVolumeChange(video, +config.volumeStep)
         break;
-      case 'i':
-        showVideoInfo(video);
+      case config.volumeResetKey:
+        handleVolumeReset(video, +config.volumeDefault || 0.5)
         break;
-      case 'p':
-        // 切换播放和暂停
-        if (video.paused) {
-          video.play();
-          showMessage('播放');
-        } else {
-          video.pause();
-          showMessage('暂停');
-        }
-        break;
-      case 'm':
-        // 切换静音
-        video.muted = !video.muted;
-        if (video.muted) {
-          showMessage('静音');
-        } else {
-          showMessage('取消静音');
-        }
-        break;
-      case 'c':
-        videoIsCenter = !videoIsCenter
-        video.style.width = '100%'
-        // video 置于中间
-        centerVideo(video);
-        if (videoIsCenter) {
-          changeVideoSize(video, -30)
-        }
-        break;
-      case '-':
-        if (!videoIsCenter) return
-        changeVideoSize(video, -10)
-        break;
-      case '=':
-        if (!videoIsCenter) return
-        // video 放大
-        changeVideoSize(video, 10)
-        break;
+      // case 'i':
+      //   showVideoInfo(video);
+      //   break;
+      // case 'p':
+      //   // 切换播放和暂停
+      //   if (video.paused) {
+      //     video.play();
+      //     showMessage('播放');
+      //   } else {
+      //     video.pause();
+      //     showMessage('暂停');
+      //   }
+      //   break;
+      // case 'm':
+      //   // 切换静音
+      //   video.muted = !video.muted;
+      //   if (video.muted) {
+      //     showMessage('静音');
+      //   } else {
+      //     showMessage('取消静音');
+      //   }
+      //   break;
+      // case 'c':
+      //   videoIsCenter = !videoIsCenter
+      //   video.style.width = '100%'
+      //   // video 置于中间
+      //   centerVideo(video);
+      //   if (videoIsCenter) {
+      //     changeVideoSize(video, -30)
+      //   }
+      //   break;
+      // case '-':
+      //   if (!videoIsCenter) return
+      //   changeVideoSize(video, -10)
+      //   break;
+      // case '=':
+      //   if (!videoIsCenter) return
+      //   // video 放大
+      //   changeVideoSize(video, 10)
+      //   break;
       default:
         if (isDebug) {
           showMessage('按键：' + e.key);
@@ -317,4 +315,40 @@ function changeVideoSize(videoEl, delta = 10) {
   const width = videoEl.style.width.replace("%", "");
   const newWidth = Math.min(Math.max(+width + delta, 10), 100);
   videoEl.style.width = `${newWidth}%`;
+}
+
+// 播放速度
+function handleSpeedChange(videoEl, delta = 0.25) {
+  const speed = videoEl.playbackRate;
+  const newSpeed = Math.max((speed + delta).toFixed(1), 0);
+  videoEl.playbackRate = newSpeed;
+  showMessage(`当前播放速度：${newSpeed}x`);
+}
+
+// 音量
+function handleVolumeChange(videoEl, delta = 0.1) {
+  const volume = videoEl.volume;
+  const newVolume = Math.max(Math.min(+volume + delta, 1), 0);
+  videoEl.volume = newVolume;
+  showMessage(`当前音量：${(newVolume * 100).toFixed(0)}%`);
+}
+
+// 快进快退
+function handleSeek(videoEl, delta = 5) {
+  const currentTime = videoEl.currentTime;
+  const newTime = Math.max(Math.min(currentTime + delta, videoEl.duration), 0);
+  videoEl.currentTime = newTime;
+  showMessage(`${delta > 0 ? '快进' : '快退'}：${Math.abs(delta)}秒`);
+}
+
+// 播放速度重置
+function handleSpeedReset(videoEl) {
+  videoEl.playbackRate = 1;
+  showMessage(`当前播放速度：1x`);
+}
+
+// 音量重置
+function handleVolumeReset(videoEl, resetValue = 0.5) {
+  videoEl.volume = resetValue;
+  showMessage(`当前音量：${resetValue * 100}%`);
 }

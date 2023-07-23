@@ -96,24 +96,24 @@ function handleListen() {
       //     showMessage('取消静音');
       //   }
       //   break;
-      // case 'c':
-      //   videoIsCenter = !videoIsCenter
-      //   video.style.width = '100%'
-      //   // video 置于中间
-      //   centerVideo(video);
-      //   if (videoIsCenter) {
-      //     changeVideoSize(video, -30)
-      //   }
-      //   break;
-      // case '-':
-      //   if (!videoIsCenter) return
-      //   changeVideoSize(video, -10)
-      //   break;
-      // case '=':
-      //   if (!videoIsCenter) return
-      //   // video 放大
-      //   changeVideoSize(video, 10)
-      //   break;
+      case config.trunLightKey:
+        videoIsCenter = !videoIsCenter
+        video.style.width = '100%'
+        // video 置于中间
+        centerVideo(video);
+        if (videoIsCenter) {
+          changeVideoSize(video, -30)
+        }
+        break;
+      case '-':
+        if (!videoIsCenter) return
+        changeVideoSize(video, -10)
+        break;
+      case '=':
+        if (!videoIsCenter) return
+        // video 放大
+        changeVideoSize(video, 10)
+        break;
       default:
         if (isDebug) {
           showMessage('按键：' + e.key);
@@ -248,7 +248,7 @@ function injectStyle() {
   }
   
   video {
-    transition: all 0.5s;
+    // transition: all 0.5s;
   }
   
   `;

@@ -22,7 +22,7 @@ function getSetting(key) {
 
 })()
 
-let isDebug = true
+let isDebug = false
 let videoIsCenter = false
 
 // 获取设置
@@ -38,10 +38,13 @@ function handleListen() {
   let video = null
   const videos = document.querySelectorAll('video');
   const bilibiliMovieVideo = document.querySelector('.bpx-player-video-wrap')?.childNodes?.[0]
+  const youtubeVideo = document.querySelector('video.html5-main-video')
+
+  const isBibiliMovie = !!bilibiliMovieVideo
 
   if (!videos.length && !bilibiliMovieVideo) return false;
 
-  video = bilibiliMovieVideo || videos[0];
+  video = bilibiliMovieVideo || youtubeVideo || videos[0];
 
   injectStyle()
 
@@ -99,18 +102,23 @@ function handleListen() {
       case config.trunLightKey:
         videoIsCenter = !videoIsCenter
         video.style.width = '100%'
-        // video 置于中间
-        centerVideo(video);
-        if (videoIsCenter) {
-          changeVideoSize(video, -30)
+        if (isBibiliMovie) {
+          // video 置于中间
+          centerBibililiVideo(video);
+          if (videoIsCenter) {
+            changeVideoSize(video, -30)
+          }
+        } else {
+          // video 置于中间
+          centerYoutubeVideo();
         }
         break;
       case '-':
-        if (!videoIsCenter) return
+        if (!videoIsCenter || !bilibiliMovieVideo) return
         changeVideoSize(video, -10)
         break;
       case '=':
-        if (!videoIsCenter) return
+        if (!videoIsCenter || !bilibiliMovieVideo) return
         // video 放大
         changeVideoSize(video, 10)
         break;
@@ -250,6 +258,15 @@ function injectStyle() {
   video {
     // transition: all 0.5s;
   }
+
+.ytb-hub-video {
+  width: 100%;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+}
   
   `;
 
@@ -260,7 +277,7 @@ function injectStyle() {
 }
 
 
-function centerVideo(videoEl) {
+function centerBibililiVideo(videoEl) {
   // 检查元素是否存在 id 属性，并且值为 "video-hub"
   if (videoEl.getAttribute("id") === "video-hub") {
     // 元素已经具有 id 属性，移除该属性
@@ -271,10 +288,12 @@ function centerVideo(videoEl) {
 
   // #biliMainHeader 隐藏或显示
   const biliMainHeader = document.getElementById("biliMainHeader");
-  if (biliMainHeader.classList.contains("hidden")) {
-    biliMainHeader.classList.remove("hidden");
-  } else {
-    biliMainHeader.classList.add("hidden");
+  if (!!biliMainHeader) {
+    if (biliMainHeader.classList.contains("hidden")) {
+      biliMainHeader.classList.remove("hidden");
+    } else {
+      biliMainHeader.classList.add("hidden");
+    }
   }
 
   // body overflow hidden
@@ -283,6 +302,43 @@ function centerVideo(videoEl) {
     body.classList.remove("overflow-hidden");
   } else {
     body.classList.add("overflow-hidden");
+  }
+}
+
+function centerYoutubeVideo() {
+  const el = document.querySelector('#player-container-outer')
+  if (el.classList.contains('ytb-hub-video')) {
+    el.classList.remove('ytb-hub-video')
+  } else {
+    el.classList.add('ytb-hub-video')
+  }
+
+  // body overflow hidden
+  const body = document.body;
+  if (body.classList.contains("overflow-hidden")) {
+    body.classList.remove("overflow-hidden");
+  } else {
+    body.classList.add("overflow-hidden");
+  }
+
+  // 创建遮罩层的 <div> 元素
+  const overlay = document.createElement("div");
+  overlay.id = "video-hub-background-overlay";
+  // 设置遮罩层样式
+  overlay.style.position = "fixed";
+  overlay.style.top = "0";
+  overlay.style.left = "0";
+  overlay.style.width = "100%";
+  overlay.style.height = "100%";
+  overlay.style.backgroundColor = "rgba(0, 0, 0, 1)";
+  overlay.style.zIndex = "9998";
+
+  // if have video-hub-background-overlay remove
+  if (document.querySelector('#video-hub-background-overlay')) {
+    document.querySelector('#video-hub-background-overlay').remove()
+  } else {
+    // 将遮罩层添加到 <body>
+    document.body.appendChild(overlay);
   }
 }
 
@@ -352,3 +408,7 @@ function handleVolumeReset(videoEl, resetValue = 0.5) {
   videoEl.volume = resetValue;
   showMessage(`当前音量：${resetValue * 100}%`);
 }
+
+
+
+

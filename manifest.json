@@ -6,13 +6,8 @@
     "storage",
     "tabs",
     "activeTab",
-    "declarativeContent",
     "scripting",
-    "contextMenus",
-    "webRequest",
-    "webRequestBlocking",
-    "unlimitedStorage",
-    "clipboardWrite"
+    "unlimitedStorage"
   ],
   "host_permissions": [
     "https://*.youtube.com/*",

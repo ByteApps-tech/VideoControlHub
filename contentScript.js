@@ -101,6 +101,7 @@ function handleListen() {
       //   break;
       case config.trunLightKey:
         videoIsCenter = !videoIsCenter
+        showMessage(videoIsCenter ? 'Turn on light' : 'Turn off light')
         video.style.width = '100%'
         if (isBibiliMovie) {
           // video 置于中间
@@ -141,9 +142,9 @@ function showMessage(message) {
 
   // 设置样式
   messageElement.style.position = 'fixed';
-  messageElement.style.top = '50%';
-  messageElement.style.left = '50%';
-  messageElement.style.transform = 'translate(-50%, -50%)';
+  messageElement.style.top = '20px';
+  messageElement.style.left = '20px';
+  // messageElement.style.transform = 'translate(-50%, -50%)';
   messageElement.style.backgroundColor = '#a7aa';
   messageElement.style.color = '#fff';
   messageElement.style.fontSize = '16px';
@@ -201,9 +202,9 @@ function showVideoInfo(video) {
   const volume = (video.volume * 100).toFixed(0)
   // 弹出当前视频 倍数 进度
   showMessage(`
-    音量：${volume}%，
-    倍速：${video.playbackRate}x，
-    进度：${current}${duration}
+    Volume: ${volume}%，
+    Speed: ${video.playbackRate}x，
+    Duration: ${current}${duration}
   `)
 }
 
@@ -378,7 +379,7 @@ function handleSpeedChange(videoEl, delta = 0.25) {
   const speed = videoEl.playbackRate;
   const newSpeed = Math.max((speed + delta).toFixed(1), 0);
   videoEl.playbackRate = newSpeed;
-  showMessage(`当前播放速度：${newSpeed}x`);
+  showMessage(`Current play speed: ${newSpeed}x`);
 }
 
 // 音量
@@ -386,7 +387,7 @@ function handleVolumeChange(videoEl, delta = 0.1) {
   const volume = videoEl.volume;
   const newVolume = Math.max(Math.min(+volume + delta, 1), 0);
   videoEl.volume = newVolume;
-  showMessage(`当前音量：${(newVolume * 100).toFixed(0)}%`);
+  showMessage(`Current volume: ${(newVolume * 100).toFixed(0)}%`);
 }
 
 // 快进快退
@@ -394,19 +395,19 @@ function handleSeek(videoEl, delta = 5) {
   const currentTime = videoEl.currentTime;
   const newTime = Math.max(Math.min(currentTime + delta, videoEl.duration), 0);
   videoEl.currentTime = newTime;
-  showMessage(`${delta > 0 ? '快进' : '快退'}：${Math.abs(delta)}秒`);
+  showMessage(`${delta > 0 ? 'Forward' : 'Backward'}: ${Math.abs(delta)}s`);
 }
 
 // 播放速度重置
 function handleSpeedReset(videoEl) {
   videoEl.playbackRate = 1;
-  showMessage(`当前播放速度：1x`);
+  showMessage(`Current play speed: 1x`);
 }
 
 // 音量重置
 function handleVolumeReset(videoEl, resetValue = 0.5) {
   videoEl.volume = resetValue;
-  showMessage(`当前音量：${resetValue * 100}%`);
+  showMessage(`Current volume: ${resetValue * 100}%`);
 }
 
 

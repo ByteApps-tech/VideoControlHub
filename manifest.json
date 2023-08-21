@@ -45,9 +45,9 @@
   ],
   "action": {
     "default_icon": {
-      "16": "assets/ext-icon.png",
-      "24": "assets/ext-icon.png",
-      "32": "assets/ext-icon.png"
+      "16": "assets/ext-icon1.png",
+      "24": "assets/ext-icon2.png",
+      "32": "assets/ext-icon3.png"
     },
     "default_title": "VideoControlHub",
     "default_popup": "popup.html"

@@ -379,7 +379,7 @@ function handleSpeedChange(videoEl, delta = 0.25) {
   const speed = videoEl.playbackRate;
   const newSpeed = Math.max((speed + delta).toFixed(1), 0);
   videoEl.playbackRate = newSpeed;
-  showMessage(`Current play speed: ${newSpeed}x`);
+  showMessage(`Speed: ${newSpeed}x`);
 }
 
 // 音量
@@ -387,7 +387,7 @@ function handleVolumeChange(videoEl, delta = 0.1) {
   const volume = videoEl.volume;
   const newVolume = Math.max(Math.min(+volume + delta, 1), 0);
   videoEl.volume = newVolume;
-  showMessage(`Current volume: ${(newVolume * 100).toFixed(0)}%`);
+  showMessage(`Volume: ${(newVolume * 100).toFixed(0)}%`);
 }
 
 // 快进快退
@@ -401,13 +401,13 @@ function handleSeek(videoEl, delta = 5) {
 // 播放速度重置
 function handleSpeedReset(videoEl) {
   videoEl.playbackRate = 1;
-  showMessage(`Current play speed: 1x`);
+  showMessage(`Speed: 1x`);
 }
 
 // 音量重置
 function handleVolumeReset(videoEl, resetValue = 0.5) {
   videoEl.volume = resetValue;
-  showMessage(`Current volume: ${resetValue * 100}%`);
+  showMessage(`Volume: ${resetValue * 100}%`);
 }
 
 

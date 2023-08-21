@@ -145,10 +145,10 @@ function showMessage(message) {
   messageElement.style.top = '20px';
   messageElement.style.left = '20px';
   // messageElement.style.transform = 'translate(-50%, -50%)';
-  messageElement.style.backgroundColor = '#a7aa';
+  messageElement.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
   messageElement.style.color = '#fff';
   messageElement.style.fontSize = '16px';
-  messageElement.style.borderRadius = '4px';
+  messageElement.style.borderRadius = '8px';
   messageElement.style.textAlign = 'center';
   messageElement.style.padding = '10px';
   messageElement.style.boxSizing = 'border-box';

@@ -31,10 +31,11 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "assets/bookmark.png",
-        "assets/play.png",
-        "assets/delete.png",
-        "assets/save.png"
+        "assets/full_icon.svg",
+        "assets/logo.svg",
+        "assets/speed_icon.svg",
+        "assets/timeline_icon.svg",
+        "assets/volume_icon.svg"
       ],
       "matches": [
         "https://*.youtube.com/*",

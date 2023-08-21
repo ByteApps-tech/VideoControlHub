@@ -1,3 +1,7 @@
+let isDebug = false
+let videoIsCenter = false
+let isDisabled = false
+
 function getSetting(key) {
   return new Promise((resolve) => {
     chrome.storage.local.get([key], (result) => resolve(result[key]))
@@ -5,9 +9,16 @@ function getSetting(key) {
 }
 
 (async () => {
+
   console.log('hello videohub')
 
   let hadListened = false
+
+  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.type === 'DISABLED') {
+      isDisabled = true
+    }
+  })
 
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
@@ -22,8 +33,6 @@ function getSetting(key) {
 
 })()
 
-let isDebug = false
-let videoIsCenter = false
 
 // 获取设置
 function getConfig() {
@@ -49,6 +58,8 @@ function handleListen() {
   injectStyle()
 
   document.addEventListener('keydown', async (e) => {
+
+    if (isDisabled) return
 
     const config = await getConfig()
 

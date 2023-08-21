@@ -21,12 +21,19 @@ const defaultSettings = {
   fullscreenKey: 'f',
 }
 
-
+chrome.runtime.onInstalled.addListener(function () {
+  // 获取当前时间
+  const currentTime = new Date().getTime();
+  // 计算7天后的时间
+  const expirationTime = currentTime + (7 * 24 * 60 * 60 * 1000);
+  // 存储到本地存储
+  chrome.storage.sync.set({ expirationTime });
+});
 
 
 chrome.tabs.onUpdated.addListener((tabId, _, tab) => {
+
   if (tab.status === 'complete') {
-    console.log('tab', tab)
 
     // chrome.action.setBadgeText({
     //   text: 'Ready',
@@ -37,6 +44,19 @@ chrome.tabs.onUpdated.addListener((tabId, _, tab) => {
       url: tab.url,
       title: tab.title
     })
+
+    chrome.storage.sync.get(['expirationTime'], function (result) {
+      // 获取当前时间
+      const currentTime = new Date().getTime();
+      // 获取存储的过期时间
+      const expirationTime = result.expirationTime;
+      // 检查是否过期
+      if (currentTime >= expirationTime) {
+        chrome.tabs.sendMessage(tabId, {
+          type: 'DISABLED',
+        })
+      }
+    });
 
     chrome.storage.sync.get('config', result => {
       if (!result.config) {

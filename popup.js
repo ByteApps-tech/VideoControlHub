@@ -10,7 +10,33 @@ const onDelete = e => { };
 
 const setBookmarkAttributes = () => { };
 
+
+
+
 document.addEventListener("DOMContentLoaded", () => {
+
+  chrome.storage.sync.get('expirationTime', result => {
+    console.log('expirationTime', result.expirationTime)
+    const currentTime = new Date().getTime();
+    const expirationTime = result.expirationTime;
+    const days = document.getElementById("days");
+    const wrapper = document.querySelector(".content-wrapper");
+    if (currentTime > expirationTime) {
+      days.innerHTML = "free version left 0 days";
+      wrapper.classList.add('disabled')
+      // 插件已被禁用
+      console.log("插件已被禁用");
+      // 可以在这里执行其他操作
+    } else {
+      const leftTime = Math.floor((expirationTime - currentTime) / (1000 * 60 * 60 * 24));
+      days.innerHTML = "free version left " + leftTime + " days";
+      wrapper.classList.remove('disabled')
+      // 插件未被禁用
+      console.log("插件未被禁用");
+      // 可以在这里执行其他操作
+    }
+
+  })
   // 获取storage中的数据
   chrome.storage.sync.get('config', result => {
     console.log("Config currently is " + result.config);
